@@ -1,31 +1,57 @@
-from price import *
-def trade_SH600039():
+from price import * 
+def tradeSZ000895():
+    total = 0.00
+    count = 0
+    code = 'SZ000895'
+    c = buy(code, 17.88, 100)
+    total += c[0]
+    count += c[2]
+    print c[0], c[1], c[2]
+    c = sell(code, 18.16, 100)
+    total += c[0]
+    count += c[2]
+    print c[0], c[1], c[2]
+    print total
+
+def tradeSH600039():
     total = 0.00
     count = 0
     code = 'SH600039'
-    c = buy(code, 4.43, 500)
+#    c = buy(code, 4.43, 500)
+#    print c[0], c[1], c[2]
+#    total += c[0]
+#    count += c[2]
+#
+#    c = buy(code, 4.42, 500)
+#    print c[0], c[1], c[2]
+#    total += c[0]
+#    count += c[2]
+#
+#    c = sell(code, 4.50, 300)
+#    print c[0], c[1], c[2]
+#    total += c[0]
+#    count += c[2]
+#
+#    c = sell(code, 4.48, 200)
+#    print c[0], c[1], c[2]
+#    total += c[0]
+#    count += c[2]
+#    print code, total, count, _round(total/count, 3)
+#
+    c = buy(code, 4.50, 500)
     print c[0], c[1], c[2]
     total += c[0]
     count += c[2]
-
-    c = buy(code, 4.42, 500)
+    c = buy(code, 4.38, 800)
     print c[0], c[1], c[2]
     total += c[0]
     count += c[2]
-
-    c = sell(code, 4.50, 300)
+    c = sell(code, 4.52 , 1300)
     print c[0], c[1], c[2]
     total += c[0]
     count += c[2]
-
-    c = sell(code, 4.48, 200)
-    print c[0], c[1], c[2]
-    total += c[0]
-    count += c[2]
-    print code, total, count, _round(total/count, 3)
-
+    print total
 def tradeSH601939():
-    pass
 #    total = 0.00
 #    count = 0
 #    c = buy('SH601939', 6.35, 100)
@@ -104,6 +130,22 @@ def tradeSH601939():
 #    count += 100
 #    print total, count, abs(total/count)
 #
+#    total = 7944.00
+#    count = 400
+#    print (10000-7944.0), count, abs((10000.00-7944.00)/count)
+#    c = buy('sh601939', 5.08, 400)
+#    print c[0], c[1], c[2]
+#    total += c[0]
+#    count += c[2]
+
+#    c = sell('sh601939', 5.12, 400)
+#    print c[0], c[1], c[2]
+#    total += c[0]
+#    count += c[2]
+    c = sell('sh601939', 5.5, 100)
+    print c[0], c[1], c[2]
+
+    #print total, count, abs(total/count)
 def planSH601939():
     spent = -2066
     count = 400
@@ -128,9 +170,13 @@ def planSH601939():
     print '^', spent, count, money_round(spent/count, 3)
 
 if __name__ == '__main__':
-    print '===== 601939 ===='
-    tradeSH601939()
-    planSH601939()
+#    print '===== 601939 ===='
+#    tradeSH601939()
+    print '===== 60039 ===='
+    tradeSH600039()
+    print '===== 000895 ===='
+    tradeSZ000895()
+#    planSH601939()
 #    print '===== 600039 ===='
 #    deal_with_SH600039()
 #    total = 0

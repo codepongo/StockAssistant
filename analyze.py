@@ -1,6 +1,16 @@
 import sys
 import datetime
 import currency
+import stock
+
+def average_price(code):
+    average = 0.00
+    stocks = stock.load_stock(code)
+    for s in stocks:
+        average += (s['low'] + s['high']) / 2
+    average = average / len(stocks)
+    return code, average
+
 
 def low_during_days(days):
     '''the last day before that the stock price is falling during $days$'''
@@ -61,6 +71,26 @@ def ccbc_cn_vs_hk():
         total += c['close'] - h['close'] * currency_
     print total/count
 
+def lowest_price(code):
+    stocks = stock.load_stock(code)
+    r = stocks[0]
+    for s in stocks:
+        if r['low'] > s['low']:
+            r = s
+    return r
 
+def days_price_low_than(code, price):
+    stocks = stock.load_stock(code)
+    total = 0
+    days = 0
+    for s in stocks:
+        if s['high'] < price:
+            days += 1
+        total +=1
+    return total, days
 if __name__ == '__main__':
-    analyze_0939_cn_vs_hk()
+    print lowest_price('601939.ss')
+    print average_price('601939.ss')
+    print lowest_price('000623.sz')
+    print average_price('000623.sz')
+#    print days_price_low_than('600039.ss', 4.43)

@@ -27,6 +27,14 @@ def stock_in_date(data, date):
             return d
     return None
 
+def stock_to_now(code):
+    now = datetime.datetime.now().date()
+    url = 'http://ichart.yahoo.com/table.csv?s=%s&d=%02d&e=%02d&f=%4d&g=d' % (code, now.month-1, now.day, now.year)
+    r = open_url(url)
+    with open(file_from_code(code), 'wb') as f:
+        f.write(r)
+    return True
+
 def append_stock_to_now(code, data = None):
     if data is None:
         data = load_stock(code)
@@ -36,10 +44,8 @@ def append_stock_to_now(code, data = None):
 def append_stock_from_to_now(code, from_date, data = None):
     if data is None:
         stock = load_stock(code)
-    print from_date
     now = datetime.datetime.now().date()
     yesterday = now - datetime.timedelta(days=1)
-    print now, yesterday
     # because the data from yahoo is delay a day so, check yesterday
     if stock_in_date(data, yesterday) is not None:
         return True
@@ -47,14 +53,20 @@ def append_stock_from_to_now(code, from_date, data = None):
     r = open_url(url)
     if r is None:
         return False
-    with open(file_from_code(code), 'rb+') as f:
+    history = ''
+    with open(file_from_code(code), 'rb') as f:
         title_len = len('Date,Open,High,Low,Close,Volume,Adj Close\n')
         f.seek(title_len, 0)
-        f.write(r[title_len:])
+        history = f.read()
+
+    with open(file_from_code(code), 'wb') as f:
+        f.write(r)
+        f.write(history)
     return True
 
 if __name__ == '__main__':
-    append_stock_to_now('601939.ss')
-    append_stock_to_now('0939.hk')
-    append_stock_to_now('600039.ss')
-    append_stock_to_now('000001.ss')
+    #append_stock_to_now('601939.ss')
+    #append_stock_to_now('0939.hk')
+    #append_stock_to_now('600039.ss')
+    #append_stock_to_now('000001.ss')
+    stock_to_now('000623.sz')

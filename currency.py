@@ -2,8 +2,17 @@ import datetime
 import json
 import urllib
 import time
+import json
 from util import *
 currency_csv = 'currency.csv'
+def currency_now_from_hexun():
+    d = {}
+    r = open_url('http://webforex.hermes.hexun.com/gb/forex/quotelist?code=FOREXHKDCNY&column=Code,Price,DateTime,priceWeight')
+    r = json.loads(r[1:-2])['Data'][0][0]
+    r[2] = str(r[2])
+    d['date'] = datetime.datetime(int(r[2][:4]), int(r[2][5:6]), int(r[2][7:8]))
+    d['currency'] = float(r[1]) / float(r[3])
+    return d
 def currency_now_from_yahoo():
     d = {}
     r = open_url('http://download.finance.yahoo.com/d/quotes.csv?e=.csv&f=sl1d1t1&s=HKDCNY=X')
@@ -40,16 +49,10 @@ def currency_now():
 def append_currency_now():
     if currency_now() is not None:
         return True
-    wait = 1
-    for i in range(1, 10):
-        d = currency_now_from_yahoo()
-        if d is not None:
-            append_data(d)
-            return True
-        else:
-            print 'sleep %ds then try again...' % (wait)
-            time.sleep(wait)
-            wait = wait * i
+    d = currency_now_from_hexun()
+    if d is not None:
+        append_data(d)
+        return True
     return False
 def append_data(d):
     s = ('%s,%.3f\n') % (d['date'].strftime('%Y-%m-%d'), d['currency'])
