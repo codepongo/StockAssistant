@@ -29,7 +29,9 @@ def stock_in_date(data, date):
 
 def stock_to_now(code):
     now = datetime.datetime.now().date()
+    print now
     url = 'http://ichart.yahoo.com/table.csv?s=%s&d=%02d&e=%02d&f=%4d&g=d' % (code, now.month-1, now.day, now.year)
+    print url
     r = open_url(url)
     with open(file_from_code(code), 'wb') as f:
         f.write(r)
@@ -69,4 +71,4 @@ if __name__ == '__main__':
     #append_stock_to_now('0939.hk')
     #append_stock_to_now('600039.ss')
     #append_stock_to_now('000001.ss')
-    stock_to_now('000623.sz')
+    stock_to_now('600511.ss')

@@ -2,14 +2,33 @@ import sys
 import datetime
 import currency
 import stock
+import rightsoffering
+def rebabilitate_forward(code, market):
+    stocks = stock.load_stock(code+'.'+market)
+    rights_offering = rightsoffering.load(code)
+    for s in stocks:
+        rate = 1.00
+        for r in rights_offering:
+            if s['date'] <= r['date']:
+                rate = rate * (1 + r['dividend'])
+        s['open'] = s['open'] * rate
+        s['close'] = s['close'] * rate
+        s['high'] = s['high'] * rate
+        s['low'] = s['low'] * rate
+    return stocks
+
+
 
 def average_price(code):
-    average = 0.00
     stocks = stock.load_stock(code)
+    return code, average_price_in_data(stocks)
+
+def average_price_in_data(stocks):
+    average = 0.00
     for s in stocks:
         average += (s['low'] + s['high']) / 2
     average = average / len(stocks)
-    return code, average
+    return average
 
 
 def low_during_days(days):
@@ -71,16 +90,30 @@ def ccbc_cn_vs_hk():
         total += c['close'] - h['close'] * currency_
     print total/count
 
-def lowest_price(code):
-    stocks = stock.load_stock(code)
+def highest_price_in_data(stocks):
+    r = stocks[0]
+    for s in stocks:
+        if r['high'] < s['high']:
+            r = s
+    return r
+
+def lowest_price_in_data(stocks):
     r = stocks[0]
     for s in stocks:
         if r['low'] > s['low']:
             r = s
     return r
 
+
+def lowest_price(code):
+    stocks = stock.load_stock(code)
+    lowest_price_in_data(stocks)
+
+
 def days_price_low_than(code, price):
     stocks = stock.load_stock(code)
+    return days_price_low_than_in_data(price, stocks)
+def days_price_low_than_in_data(price, stocks):
     total = 0
     days = 0
     for s in stocks:
@@ -89,8 +122,18 @@ def days_price_low_than(code, price):
         total +=1
     return total, days
 if __name__ == '__main__':
-    print lowest_price('601939.ss')
-    print average_price('601939.ss')
-    print lowest_price('000623.sz')
-    print average_price('000623.sz')
+#    stocks = rebabilitate_forward('000623', 'sz')
+#    print lowest_price_in_data(stocks)
+#    print highest_price_in_data(stocks)
+#    print days_price_low_than_in_data(25.15, stocks)
+#    print average_price_in_data(stocks)
+    stocks = rebabilitate_forward('600511', 'ss')
+    print lowest_price_in_data(stocks)
+    print highest_price_in_data(stocks)
+    print days_price_low_than_in_data(34.19, stocks)
+    print average_price_in_data(stocks)
+#    print lowest_price('601939.ss')
+#    print average_price('601939.ss')
+#    print lowest_price('000623.sz')
+#    print average_price('000623.sz')
 #    print days_price_low_than('600039.ss', 4.43)
