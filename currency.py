@@ -10,7 +10,7 @@ def currency_now_from_hexun():
     r = open_url('http://webforex.hermes.hexun.com/gb/forex/quotelist?code=FOREXHKDCNY&column=Code,Price,DateTime,priceWeight')
     r = json.loads(r[1:-2])['Data'][0][0]
     r[2] = str(r[2])
-    d['date'] = datetime.datetime(int(r[2][:4]), int(r[2][5:6]), int(r[2][7:8]))
+    d['date'] = datetime.datetime(int(r[2][:4]), int(r[2][4:6]), int(r[2][6:8]))
     d['currency'] = float(r[1]) / float(r[3])
     return d
 def currency_now_from_yahoo():
