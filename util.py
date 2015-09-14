@@ -26,7 +26,7 @@ def open_url(url):
         if 200 != r.getcode():
             raise
     except:
-        print 'except'
+        print 'open_url:', url, '=exception'
         return None
     return r.read()
 
