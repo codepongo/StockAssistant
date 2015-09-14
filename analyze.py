@@ -113,24 +113,20 @@ def lowest_price(code):
 def days_price_low_than(code, price):
     stocks = stock.load_stock(code)
     return days_price_low_than_in_data(price, stocks)
+
 def days_price_low_than_in_data(price, stocks):
     total = 0
     days = 0
     for s in stocks:
-        if s['high'] < price:
+        if s['low'] > price:
             days += 1
         total +=1
     return total, days
 if __name__ == '__main__':
-#    stocks = rebabilitate_forward('000623', 'sz')
-#    print lowest_price_in_data(stocks)
-#    print highest_price_in_data(stocks)
-#    print days_price_low_than_in_data(25.15, stocks)
-#    print average_price_in_data(stocks)
-    stocks = rebabilitate_forward('600511', 'ss')
+    stocks = rebabilitate_forward('000623', 'sz')
     print lowest_price_in_data(stocks)
     print highest_price_in_data(stocks)
-    print days_price_low_than_in_data(34.19, stocks)
+    print days_price_low_than_in_data(23.48, stocks)
     print average_price_in_data(stocks)
 #    print lowest_price('601939.ss')
 #    print average_price('601939.ss')
