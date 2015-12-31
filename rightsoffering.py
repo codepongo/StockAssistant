@@ -27,6 +27,7 @@ def rights_offering(data):
         if d['dividend'] != '--' or d['transfer'] != '--':
             i = {}
             i['date'] = s_to_date(d['ex-dividend'])
+
             i['dividend'] = 0.0
             if d['dividend'] != '--':
                 i['dividend'] += float(d['dividend'])
@@ -36,6 +37,14 @@ def rights_offering(data):
             r.append(i)
     r.reverse()
     return r
+
+def dividend_bonus(code, data):
+    with open(code+'.dividend.bonus.csv', 'wb') as f:
+        f.write('简介,公告日,分红,送股,转增股,登记日,除权日,备注\n')
+        for d in data:
+            s = d['name'] + ',' + d['bulletin'] + ',' + d['bonus'] + ',' + d['dividend'] + ',' + d['transfer'] + ',' + d['record'] + ',' + d['ex-dividend'] + ',' + d['remark'] + '\n' 
+            s = s.encode('utf8')
+            f.write(s)
 
     
 def feed_from_hexun(code):
@@ -77,6 +86,7 @@ def feed_from_hexun(code):
     return p.data
 
 if __name__ == '__main__':
-    code = '600511'
-    save_to(code, rights_offering(feed_from_hexun(code)))
+    code = '000623'
+    dividend_bonus(code, feed_from_hexun(code))
+    #save_to(code, rights_offering(feed_from_hexun(code)))
 

@@ -3,6 +3,56 @@ import datetime
 import currency
 import stock
 import rightsoffering
+
+def is_down_in_day(s):
+    if s['close'] < s['open']:
+        return True
+def is_up_in_day(s):
+    if s['close'] > s['open']:
+        return True
+
+def x():
+    win = 0
+    days = [0, 0, 0]
+    stocks = rebabilitate_forward('000623', 'sz')
+    for i in range(len(stocks)):
+        cur = stocks[i]
+        if not is_down_in_day(cur):
+            continue
+        days[0] += 1
+        if i -1 < 0:
+            continue
+
+        prev = stocks[i-1]
+        if not is_up_in_day(prev):
+            continue
+        days[1] +=1
+        if cur['low'] >= prev['low'] or cur['high'] >= prev['high']:
+            continue
+        days[2] += 1
+        if i + 1 >= len(stocks):
+            continue
+        key = None
+        j = i + 1
+        while True:
+            next = stocks[j]
+            if not is_up_in_day(next):
+                break
+            if cur['low'] >= next['low'] or cur['high'] >= next['high']:
+                break
+            if next['low'] <= cur['low'] and next['high'] <= cur['high']:
+                j = j + 1
+                continue
+            if next['low'] >= cur['low'] and next['high'] >= cur['high']:
+                key = stocks[j]
+                break
+        if key == None:
+            continue
+        print str(key['date'])[:10]
+        if stocks[j+1]['open'] > key['open']:
+            win += 1
+        return win/len(stocks)
+        
 def rebabilitate_forward(code, market):
     stocks = stock.load_stock(code+'.'+market)
     rights_offering = rightsoffering.load(code)
@@ -115,18 +165,44 @@ def days_price_low_than(code, price):
     return days_price_low_than_in_data(price, stocks)
 
 def days_price_low_than_in_data(price, stocks):
-    total = 0
+    dates = []
     days = 0
     for s in stocks:
-        if s['low'] > price:
+        if s['low'] < price:
             days += 1
-        total +=1
-    return total, days
+            dates.append(s['date'])
+    return len(stocks), days, dates
+
+def ccbc_percent_when_hz500_down_5_percent():
+    ccbc = stock.load_stock('601939.ss')
+    hz500 = stock.load_stock('000300.ss')
+    for i in xrange(len(hz500)-1):
+        if (hz500[i+1]['open'] - hz500[i]['close']) * 100 / hz500[i]['open'] < -5:
+            for v in ccbc:
+                if hz500[i]['date'] == v['date']:
+                    print hz500[i]['close'], hz500[i+1]['open']
+                    print "%.2f" % ((v['close'] - v['open']) * 100 / v['open'])
+
 if __name__ == '__main__':
+    ccbc_percent_when_hz500_down_5_percent()
+    sys.exit(0)
     stocks = rebabilitate_forward('000623', 'sz')
-    print lowest_price_in_data(stocks)
-    print highest_price_in_data(stocks)
-    print days_price_low_than_in_data(23.48, stocks)
+    print lowest_price_in_data(stocks)['low']
+    print highest_price_in_data(stocks)['high']
+    r = days_price_low_than_in_data(15.77, stocks)
+    print r[:2]
+    #for i in r[2]:
+    #    print i.date()
+    print average_price_in_data(stocks)
+    print 'xxxxxxxxxxxxxxxxxxxx'
+
+
+
+    stocks = stock.load_stock('000623.sz')
+    print lowest_price_in_data(stocks)['low']
+    print highest_price_in_data(stocks)['high']
+    r = days_price_low_than_in_data(15.77, stocks)
+    print r[:2]
     print average_price_in_data(stocks)
 #    print lowest_price('601939.ss')
 #    print average_price('601939.ss')

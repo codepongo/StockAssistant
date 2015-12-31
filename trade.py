@@ -169,13 +169,38 @@ def planSH601939():
         i += 1
     print '^', spent, count, money_round(spent/count, 3)
 
+def planSZ000623():
+    total = 0.00
+    count = 0
+    code = 'SZ000623'
+    c = cost(code, '21.57', 100)
+    total += c[0]
+    count += c[2]
+    c = cost(code, '19.21', 100)
+    total += c[0]
+    count += c[2]
+    c = cost(code, '16.00', 100)
+    total += c[0]
+    count += c[2]
+    c = cost(code, '13.00', 100)
+    total += c[0]
+    count += c[2]
+    c = cost(code, '12.11', 200)
+    total += c[0]
+    count += c[2]
+    print total, count, money_round(total/count, 3)
+
 if __name__ == '__main__':
+    c = cost('SH601939', '5.66', 200)
+    print c
 #    print '===== 601939 ===='
 #    tradeSH601939()
-    print '===== 60039 ===='
-    tradeSH600039()
-    print '===== 000895 ===='
-    tradeSZ000895()
+#    print '===== 60039 ===='
+#    tradeSH600039()
+#    print '===== 000895 ===='
+#    tradeSZ000895()
+#    print '===== 000623 ===='
+#    planSZ000623()
 #    planSH601939()
 #    print '===== 600039 ===='
 #    deal_with_SH600039()
