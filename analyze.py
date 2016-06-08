@@ -1,3 +1,4 @@
+#coding:utf8
 import sys
 import datetime
 import currency
@@ -10,6 +11,29 @@ def is_down_in_day(s):
 def is_up_in_day(s):
     if s['close'] > s['open']:
         return True
+def change_of_day(s):
+    return s['close'] - s['open'] 
+
+def change_of_days(before, after):
+    return after['close'] - before['open']
+
+def tomorrow_up_when_how_many_is_down_today(stocks, percent, days):
+    gain = 0
+    total = 0
+    length = len(stocks)
+    for i in range(len(stocks)):
+        if i+days+1 >= length:
+            break
+        percent_of_today = change_of_days(stocks[i], stocks[i+days]) * 100 /stocks[i-1]['close']
+        if percent_of_today < percent:
+            total += 1
+            if change_of_day(stocks[i+days+1]) > 0:
+                gain += 1
+            else:
+                pass
+    if total == 0:
+        return 0
+    return gain * 100 / total
 
 def x():
     win = 0
@@ -182,28 +206,113 @@ def ccbc_percent_when_hz500_down_5_percent():
                 if hz500[i]['date'] == v['date']:
                     print hz500[i]['close'], hz500[i+1]['open']
                     print "%.2f" % ((v['close'] - v['open']) * 100 / v['open'])
+def agv_when(data):
+    code = '000001'
+    market = 'ss'
+    szzs = stock.load_stock(code+'.'+market)
+    date = []
+    for ss in szzs:
+        if ss['open'] < 2760 and ss['open'] > 2650:
+            date.append(ss['date'])
+    price = 0.00
+    count = 0
+    for d in data:
+        if d['date'] in date:
+            count += 1
+            avg = (d['close'] + d['open']) / 2 
+            price += avg
+    return price/count
+
+
+
 
 if __name__ == '__main__':
-    ccbc_percent_when_hz500_down_5_percent()
+    code = '000623'
+    market = 'sz'
+    
+    stocks = stock.load_stock(code+'.'+market)
+    days = 4
+    for i in range(10 * days):
+        percent = -i
+        print '%.2f%% -- %.2f%%' % (percent, tomorrow_up_when_how_many_is_down_today(stocks, percent,days))
+
+    stocks = rebabilitate_forward(code, market)
+    for i in range(10 * days):
+        percent = -i
+        print '%.2f%% -- %.2f%%' % (percent, tomorrow_up_when_how_many_is_down_today(stocks, percent,days))
     sys.exit(0)
-    stocks = rebabilitate_forward('000623', 'sz')
-    print lowest_price_in_data(stocks)['low']
-    print highest_price_in_data(stocks)['high']
-    r = days_price_low_than_in_data(15.77, stocks)
-    print r[:2]
-    #for i in r[2]:
-    #    print i.date()
-    print average_price_in_data(stocks)
-    print 'xxxxxxxxxxxxxxxxxxxx'
 
 
 
-    stocks = stock.load_stock('000623.sz')
-    print lowest_price_in_data(stocks)['low']
-    print highest_price_in_data(stocks)['high']
-    r = days_price_low_than_in_data(15.77, stocks)
-    print r[:2]
-    print average_price_in_data(stocks)
+
+    code = '601939'
+    market = 'ss'
+    data = stock.load_stock(code+'.'+market)
+    data = rebabilitate_forward(code, market)
+    avg = agv_when(data)
+    current = data[-1]['close']
+    print code, current, avg, (current - avg) * 100 / 14.86
+    
+    code = '000623'
+    market = 'sz'
+    data = stock.load_stock(code+'.'+market)
+    data = rebabilitate_forward(code, market)
+    avg = agv_when(data)
+    current = data[-1]['close']
+    print code, current, avg, (current - avg) * 100 / 14.86
+
+    code = '600036'
+    market = 'ss'
+    data = stock.load_stock(code+'.'+market)
+    data = rebabilitate_forward(code, market)
+    avg = agv_when(data)
+    current = data[-1]['close']
+    print code, current, avg, (current - avg) * 100 / 14.86
+
+
+    code = '600511'
+    market = 'ss'
+    data = stock.load_stock(code+'.'+market)
+    avg = agv_when(data)
+    current = data[-1]['close']
+    print code, current, avg, (current - avg) * 100 / 14.86
+
+    sys.exit(0)
+
+
+
+
+
+    code = '601939'
+    market = 'ss'
+    stocks = stock.load_stock(code+'.'+market)
+    print 'low:', lowest_price_in_data(stocks)['low']
+    print 'high:', highest_price_in_data(stocks)['high']
+    avg = average_price_in_data(stocks)
+    print 'avg:', avg
+    cur = 5.09
+    r = days_price_low_than_in_data(cur, stocks)
+    print 'low than',cur, ':', 100 * r[1] / r[0], '%'
+
+    print 'right offering****'
+    stocks = rebabilitate_forward(code, market)
+    print 'low:', lowest_price_in_data(stocks)['low']
+    print 'high:', highest_price_in_data(stocks)['high']
+    avg = average_price_in_data(stocks)
+    print 'avg:', avg
+    cur -5.09
+    r = days_price_low_than_in_data(cur, stocks)
+    print 'low than',cur, ':', 100 * r[1] / r[0], '%'
+    sys.exit(0)
+#    ccbc_percent_when_hz500_down_5_percent()
+
+
+#    stocks = stock.load_stock('000623.sz')
+#    print lowest_price_in_data(stocks)['low']
+#    print highest_price_in_data(stocks)['high']
+#    r = days_price_low_than_in_data(15.77, stocks)
+#    print r[:2]
+#    print average_price_in_data(stocks)
 #    print lowest_price('601939.ss')
 #    print average_price('601939.ss')
 #    print lowest_price('000623.sz')

@@ -191,8 +191,30 @@ def planSZ000623():
     print total, count, money_round(total/count, 3)
 
 if __name__ == '__main__':
-    c = cost('SH601939', '5.66', 200)
-    print c
+    total = 0
+    count = 0
+    c = buy('SH601939', '5.65', 300)
+    total += c[0]
+    count += c[2]
+    c = buy('SH601939', '5.58', 400)
+    total += c[0]
+    count += c[2]
+    c = buy('SH601939', '5.50', 800)
+    total += c[0]
+    count += c[2]
+    c = buy('SH601939', '5.49', 400)
+    total += c[0]
+    count += c[2]
+    c = buy('SH601939', '5.42', 400)
+    total += c[0]
+    count += c[2]
+    c = buy('SH601939', '5.33', 2400)
+    total += c[0]
+    count += c[2]
+    c = sell('SH601939', '5.30', 2400)
+    total += c[0]
+    count += c[2]
+    print '%.2f' % (abs(total /count))
 #    print '===== 601939 ===='
 #    tradeSH601939()
 #    print '===== 60039 ===='

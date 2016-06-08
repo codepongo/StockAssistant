@@ -23,8 +23,10 @@ def save_to(code, data):
 
 def rights_offering(data):
     r = []
+    print data
     for d in data:
         if d['dividend'] != '--' or d['transfer'] != '--':
+            print d
             i = {}
             i['date'] = s_to_date(d['ex-dividend'])
 
@@ -86,7 +88,8 @@ def feed_from_hexun(code):
     return p.data
 
 if __name__ == '__main__':
-    code = '000623'
+    code = '600036'
     dividend_bonus(code, feed_from_hexun(code))
-    #save_to(code, rights_offering(feed_from_hexun(code)))
+    #print rights_offering(feed_from_hexun(code))
+    save_to(code, rights_offering(feed_from_hexun(code)))
 
